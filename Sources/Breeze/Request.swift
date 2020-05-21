@@ -48,6 +48,16 @@ public struct Request: Requestable, Header {
     public var method: RequestMethod
     public var headers: [String: String]?
     
+    public init(url: String,
+                method: RequestMethod = .get,
+                body: Data? = nil,
+                headers: [String: String]? = nil) {
+        self.url = url
+        self.method = method
+        self.body = body
+        self.headers = headers
+    }
+    
     public func build() throws -> URLRequest {
         guard let url = URL(string: self.url) else {
             throw RequestError.invalidUrl(self.url)
