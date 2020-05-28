@@ -16,21 +16,25 @@ public class Connection {
         self.init(sessionConfig: config)
     }
     
-    public init(sessionConfig: URLSessionConfiguration? = nil) {
+    public init(sessionConfig: URLSessionConfiguration? = nil,
+                delegate: URLSessionDelegate? = nil,
+                delegateQueue: OperationQueue? = nil) {
         let defaultConfig = URLSessionConfiguration.default
         defaultConfig.timeoutIntervalForRequest = TimeInterval(30)
         defaultConfig.timeoutIntervalForResource = TimeInterval(30)
         self.queue = DispatchQueue(label: "com.breeze.api", qos: .utility)
-        self.urlSession = URLSession(configuration: sessionConfig ?? defaultConfig)
+        self.urlSession = URLSession(configuration: sessionConfig ?? defaultConfig,
+                                     delegate: delegate,
+                                     delegateQueue: delegateQueue ?? OperationQueue.main)
     }
     
-    public typealias RawResponseResult = Result<(data: Data, response: URLResponse),Error>
+    public typealias RawResponseResult = Result<(data: Data, response: URLResponse), Error>
     public typealias ResponseResult<T> = Result<T, Error>
     
     public func send<T: Decodable>(request: URLRequest,
                                    completion: @escaping (ResponseResult<T>) -> Void,
                                    decoder: JSONDecoder = JSONDecoder()) {
-        self.send(request: request) { (rawResult) in
+        self.send(request: request) { rawResult in
             var result: ResponseResult<T>
             switch rawResult {
             case .success(let res):
@@ -40,17 +44,15 @@ public class Connection {
                 } catch let err {
                     result = .failure(err)
                 }
-                break
             case .failure(let err):
                 result = .failure(err)
-                break
             }
             completion(result)
         }
     }
     
-    public func send(request: URLRequest, completion: @escaping(RawResponseResult) -> Void) {
-        self.urlSession.dataTask(with: request) { (data, response, err) in
+    public func send(request: URLRequest, completion: @escaping (RawResponseResult) -> Void) {
+        self.urlSession.dataTask(with: request) { data, response, err in
             var result: RawResponseResult
             if let err = err {
                 result = .failure(err)
@@ -64,7 +66,7 @@ public class Connection {
     }
 }
 
-//public class Breeze {
+// public class Breeze {
 //    private var semaphore = DispatchSemaphore(value: 0)
 //    private var urlSession: URLSession
 //    private var queue: DispatchQueue
@@ -97,9 +99,9 @@ public class Connection {
 //            completionHandler?(data, response, err)
 //        }.resume()
 //    }
-//}
+// }
 //
-//public class Api {
+// public class Api {
 //    public var clientId: String
 //    public var clientSecret: String
 ////    public var delegate: PhilinqDelegate?
@@ -193,5 +195,5 @@ public class Connection {
 //            }
 //        }
 //    }
-//}
+// }
 #endif

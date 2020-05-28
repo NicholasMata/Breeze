@@ -9,9 +9,15 @@ import UIKit
 
 public struct ApiOptions {
     var sessionConfiguration: URLSessionConfiguration?
+    var sessionDelegate: URLSessionDelegate?
+    var sessionDelegateQueue: OperationQueue?
 
-    public init(sessionConfiguration: URLSessionConfiguration?) {
+    public init(sessionConfiguration: URLSessionConfiguration? = nil,
+                sessionDelegate: URLSessionDelegate? = nil,
+                sessionDelegateQueue: OperationQueue? = nil) {
         self.sessionConfiguration = sessionConfiguration
+        self.sessionDelegate = sessionDelegate
+        self.sessionDelegateQueue = sessionDelegateQueue
     }
 }
 
@@ -21,8 +27,8 @@ public class Api {
     public var connection: Connection
     var modifiers: [Modifier]
 
-    public init(modifiers: [Modifier] = [], options: ApiOptions?) {
-        connection = Connection(sessionConfig: options?.sessionConfiguration)
+    public init(modifiers: [Modifier] = [], options: ApiOptions? = nil) {
+        connection = Connection(sessionConfig: options?.sessionConfiguration, delegate: options?.sessionDelegate, delegateQueue: options?.sessionDelegateQueue)
         self.modifiers = modifiers
     }
 
