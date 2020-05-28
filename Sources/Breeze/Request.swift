@@ -42,7 +42,6 @@ public enum RequestError: LocalizedError {
 }
 
 public struct Request: Requestable, Header {
-    
     public var url: String
     public var body: Data?
     public var method: RequestMethod

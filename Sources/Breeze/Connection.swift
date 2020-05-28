@@ -6,8 +6,8 @@ enum ConnectionError: LocalizedError {
 }
 
 public class Connection {
-    private var urlSession: URLSession
-    private var queue: DispatchQueue
+    public var urlSession: URLSession
+    public var queue: DispatchQueue
     
     public convenience init() {
         let config = URLSessionConfiguration.default
