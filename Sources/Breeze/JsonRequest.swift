@@ -33,8 +33,10 @@ public struct JsonRequest<T: Encodable>: Requestable, Header {
     public func modify(request: URLRequest) throws -> URLRequest {
         var request = request
         request.httpMethod = method.rawValue
-        request.allHTTPHeaderFields = self.headers
+        request.allHTTPHeaderFields = headers
+        request.allHTTPHeaderFields?["Accepts"] = "application/json"
         if let body = body {
+            request.allHTTPHeaderFields?["Content-Type"] = "application/json"
             let encoder = JSONEncoder()
             request.httpBody = try encoder.encode(body)
         }
