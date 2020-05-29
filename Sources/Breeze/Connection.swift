@@ -3,6 +3,7 @@ import UIKit
 
 enum ConnectionError: LocalizedError {
     case impossible
+    case failureStatusCode(Int, Data?)
 }
 
 public class Connection {
@@ -56,6 +57,8 @@ public class Connection {
             var result: RawResponseResult
             if let err = err {
                 result = .failure(err)
+            } else if let response = response as? HTTPURLResponse, response.statusCode < 200 || response.statusCode > 299 {
+                result = .failure(ConnectionError.failureStatusCode(response.statusCode, data))
             } else if let data = data, let response = response {
                 result = .success((data, response))
             } else {
