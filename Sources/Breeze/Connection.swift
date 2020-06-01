@@ -43,7 +43,7 @@ public class Connection {
                 switch res.response {
                 case let response as HTTPURLResponse:
                     if let contentLength = response.allHeaderFields["Content-Length"] as? String,
-                        Int(contentLength) ?? 0 > 0 {
+                    Int(contentLength) ?? 0 > 0 || res.data.count > 0 {
                         do {
                             let json = try decoder.decode(T.self, from: res.data)
                             result = .success(json)
