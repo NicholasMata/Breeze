@@ -33,17 +33,28 @@ public class Connection {
     public typealias ResponseResult<T> = Result<T, Error>
     
     public func send<T: Decodable>(request: URLRequest,
-                                   completion: @escaping (ResponseResult<T>) -> Void,
+                                   completion: @escaping (ResponseResult<T?>) -> Void,
                                    decoder: JSONDecoder = JSONDecoder()) {
         self.send(request: request) { rawResult in
-            var result: ResponseResult<T>
+            var result: ResponseResult<T?>
             switch rawResult {
             case .success(let res):
-                do {
-                    let json = try decoder.decode(T.self, from: res.data)
-                    result = .success(json)
-                } catch let err {
-                    result = .failure(err)
+                
+                switch res.response {
+                case let response as HTTPURLResponse:
+                    if let contentLength = response.allHeaderFields["Content-Length"] as? String,
+                        Int(contentLength) ?? 0 > 0 {
+                        do {
+                            let json = try decoder.decode(T.self, from: res.data)
+                            result = .success(json)
+                        } catch let err {
+                            result = .failure(err)
+                        }
+                    } else {
+                        result = .success(nil)
+                    }
+                default:
+                    result = .success(nil)
                 }
             case .failure(let err):
                 result = .failure(err)

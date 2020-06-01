@@ -32,7 +32,7 @@ public class Api {
         self.modifiers = modifiers
     }
 
-    public func retrieve<T: Decodable>(request: Requestable, completion: @escaping (Result<T, Error>) -> Void) throws {
+    public func retrieve<T: Decodable>(request: Requestable, completion: @escaping (Result<T?, Error>) -> Void) throws {
         let request = try request.build()
         let finalRequest = modifiers.reduce(request) { (request: URLRequest, modifier: Modifier) -> URLRequest in
             (try? modifier.modify(request: request)) ?? request
