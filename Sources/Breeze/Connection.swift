@@ -42,7 +42,7 @@ public class Connection {
                 
                 switch res.response {
                 case let response as HTTPURLResponse:
-                    if (res.data.count > 0 {
+                    if res.data.count > 0 {
                         do {
                             let json = try decoder.decode(T.self, from: res.data)
                             result = .success(json)
