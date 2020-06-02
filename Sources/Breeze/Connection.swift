@@ -1,7 +1,7 @@
 #if canImport(UIKit)
 import UIKit
 
-enum ConnectionError: LocalizedError {
+public enum ConnectionError: LocalizedError {
     case impossible
     case failureStatusCode(Int, Data?)
 }
