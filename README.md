@@ -1,3 +1,5 @@
-# Breeze
+# Breeze - ARCHIVED
 
-A description of this package.
+IF YOU ARE LOOKING FOR A SIMPLE CLASS TO MAKE API CALLS. 
+
+**CHECKOUT THIS** https://github.com/NicholasMata/ApiKit
